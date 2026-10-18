@@ -41,7 +41,7 @@ Using MinGW GCC on Windows:
 gcc main.c -o CipherChaosSimple.exe -lws2_32
 ```
 
-In Code::Blocks, open **Settings > Compiler > Linker settings** and add `-lws2_32` under **Other linker options**, then build and run.
+In Code::Blocks, open **Settings > Compiler > Linker settings** and add `-lws2_32` under **Other linker options**, then build and RUN.
 
 XOR is for demonstration, not secure messaging. History is kept in memory. Restart both programs for a fresh session because message IDs start at 1.
 
