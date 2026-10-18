@@ -1,5 +1,3 @@
-/* CipherChaos Simple: one C file, two consoles, three data structures.
-   Windows only. XOR is a teaching example, not secure encryption. */
 #define _CRT_SECURE_NO_WARNINGS
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -11,7 +9,6 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "ws2_32.lib")
 #endif
-
 #define SIZE 256
 #define BUCKETS 8
 #define PORT 5057
@@ -19,20 +16,20 @@
 typedef struct Message {
     int id, sample;
     char text[SIZE], status[12];
-    struct Message *next;       /* Next message in history. */
-    struct Message *hash_next;  /* Next message in this hash bucket. */
+    struct Message *next;
+    struct Message *hash_next;
 } Message;
 
 typedef struct QueueNode {
-    Message *message;           /* Shares the history record. */
+    Message *message;
     struct QueueNode *next;
-} QueueNode;
+}QueueNode;
 
 Message *head = NULL, *tail = NULL, *table[BUCKETS] = {NULL};
 QueueNode *front = NULL, *rear = NULL;
 int next_id = 1;
 
-/* Read a complete input line without overflowing the destination. */
+
 int read_line(const char *prompt, char *text, int size) {
     int ch;
     printf("%s", prompt);
@@ -55,7 +52,7 @@ int read_number(const char *prompt) {
     return sscanf(text, "%d %c", &number, &extra) == 1 ? number : -1;
 }
 
-/* HASH TABLE: ID modulo 8 chooses the bucket; collisions form a chain. */
+
 Message *find_message(int id, int explain) {
     int bucket = id % BUCKETS;
     Message *message;
@@ -68,7 +65,7 @@ Message *find_message(int id, int explain) {
     return NULL;
 }
 
-/* LINKED LIST: append at the tail, then index that same node. */
+
 Message *add_history(int id, int sample, const char *text, const char *status) {
     int bucket = id % BUCKETS;
     Message *message = malloc(sizeof(Message));
@@ -86,7 +83,7 @@ Message *add_history(int id, int sample, const char *text, const char *status) {
     return message;
 }
 
-/* QUEUE: add at REAR, inspect/remove at FRONT. */
+
 void enqueue_message(const char *text) {
     QueueNode *node = malloc(sizeof(QueueNode));
     Message *message;
@@ -107,7 +104,7 @@ void dequeue_message(void) {
     if (!front) return;
     front = front->next;
     if (!front) rear = NULL;
-    free(old); /* The message itself remains in history. */
+    free(old);
 }
 
 void show_queue(void) {
@@ -137,13 +134,13 @@ void show_hash_table(void) {
     }
 }
 
-/* BASIC ENCRYPTION: applying XOR twice with the same key restores the text. */
+
 void xor_text(unsigned char *text, int length, int key) {
     int i;
     for (i = 0; i < length; ++i) text[i] ^= (unsigned char)key;
 }
 
-/* TCP may split data, so repeat send/recv until every byte is transferred. */
+
 int transfer(SOCKET connection, char *data, int length, int sending) {
     int done = 0, count;
     while (done < length) {
