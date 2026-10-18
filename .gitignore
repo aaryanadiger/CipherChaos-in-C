@@ -1,0 +1,10 @@
+*.o
+*.obj
+*.exe
+!CipherChaosSimple.exe
+*.pdb
+*.ilk
+*.layout
+*.depend
+bin/
+obj/
